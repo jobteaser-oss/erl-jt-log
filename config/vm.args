@@ -1,6 +1,6 @@
--sname jt_log_formatter
+-sname jt_log
 
--setcookie jt_log_formatter
+-setcookie jt_log
 
 +A 16
 +pc unicode
