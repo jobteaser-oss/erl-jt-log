@@ -4,7 +4,7 @@
 [![CircleCI](https://circleci.com/gh/jobteaser-oss/erl-jt-log/tree/master.svg?style=svg)](https://circleci.com/gh/jobteaser-oss/erl-jt-log/tree/master)
 
 ## Introduction
-The repository contains logging tools which follow JobTeaser convention.
+The repository contains logging tools which follow JobTeaser conventions.
 
 ## Build
 The project can be built with:
