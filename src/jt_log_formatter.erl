@@ -94,7 +94,7 @@ event_message_domain(_) ->
 
 -spec event_message_level(logger:log_event()) -> level().
 event_message_level(#{level := Level}) when
-    Level == debug; Level == Level; Level == notice ->
+    Level == debug; Level == info; Level == notice ->
   info;
 event_message_level(_) ->
   error.
