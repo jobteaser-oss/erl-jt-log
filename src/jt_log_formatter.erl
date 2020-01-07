@@ -52,17 +52,27 @@ format(Event, Config) ->
   format_message(Msg, Config2).
 
 -spec format_message(message(), config()) -> unicode:chardata().
-format_message(Msg, #{format := text}) ->
+format_message(Msg, Config = #{format := text}) ->
   Domain = Msg#message.domain,
   DomainWidth = 32,
-  Text = indent_text(Msg#message.text, DomainWidth + 2),
-  BasePart = io_lib:format("~-*s  ~s", [DomainWidth, Domain, Text]),
+  TextColor = case Msg#message.level of
+                info -> default;
+                error -> red
+              end,
+  Text = maybe_colorize(indent_text(Msg#message.text, DomainWidth + 2),
+                        TextColor,
+                        Config),
+  BasePart = io_lib:format("~-*s  ~s", [DomainWidth,
+                                        maybe_colorize(Domain, green, Config),
+                                        Text]),
   FormatDatum = fun (Name, Value, Acc) ->
+                    NameString = maybe_colorize(atom_to_list(Name), blue,
+                                                Config),
                     String = case Value of
-                               Bin when is_binary(Value) ->
-                                 io_lib:format(" ~s=~s", [Name, Value]);
+                               Bin when is_binary(Bin) ->
+                                 io_lib:format(" ~s=~s", [NameString, Bin]);
                                _ ->
-                                 io_lib:format(" ~s=~p", [Name, Value])
+                                 io_lib:format(" ~s=~p", [NameString, Value])
                              end,
                     [String | Acc]
                 end,
@@ -151,3 +161,9 @@ format_time(Time) ->
 indent_text(Text, IndentSize) ->
   Padding = io_lib:format("~*s", [IndentSize, ""]),
   string:replace(Text, "\n", [$\n, Padding], all).
+
+-spec maybe_colorize(iodata(), jt_log_term:color(), config()) -> iodata().
+maybe_colorize(Text, Color, #{color := true}) ->
+  jt_log_term:colorize(Text, Color);
+maybe_colorize(Text, _Color, _Config) ->
+  Text.
