@@ -29,7 +29,7 @@
 -record(message, {domain :: binary(),
                   level :: level(),
                   time :: integer(), % microseconds
-                  text :: binary(),
+                  text :: unicode:chardata(),
                   data :: map()}).
 -type message() :: #message{}.
 
@@ -157,12 +157,14 @@ format_time(Time) ->
                                                   {offset, "Z"}]),
   unicode:characters_to_binary(String).
 
--spec indent_text(string(), non_neg_integer()) -> string().
+-spec indent_text(Text, non_neg_integer()) -> Text when
+    Text :: unicode:chardata().
 indent_text(Text, IndentSize) ->
   Padding = io_lib:format("~*s", [IndentSize, ""]),
   string:replace(Text, "\n", [$\n, Padding], all).
 
--spec maybe_colorize(iodata(), jt_log_term:color(), config()) -> iodata().
+-spec maybe_colorize(Text, jt_log_term:color(), config()) -> Text when
+    Text :: unicode:chardata().
 maybe_colorize(Text, Color, #{color := true}) ->
   jt_log_term:colorize(Text, Color);
 maybe_colorize(Text, _Color, _Config) ->
