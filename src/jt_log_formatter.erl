@@ -54,7 +54,7 @@ format(Event, Config) ->
 -spec format_message(message(), config()) -> unicode:chardata().
 format_message(Msg, Config = #{format := text}) ->
   DomainWidth = 32,
-  Domain = io_lib:format("~-*s", [DomainWidth, Msg#message.domain]),
+  Domain = io_lib:format("~-*ts", [DomainWidth, Msg#message.domain]),
   TextColor = case Msg#message.level of
                 info -> default;
                 error -> red
@@ -62,16 +62,16 @@ format_message(Msg, Config = #{format := text}) ->
   Text = maybe_colorize(indent_text(Msg#message.text, DomainWidth + 2),
                         TextColor,
                         Config),
-  BasePart = io_lib:format("~s  ~s", [maybe_colorize(Domain, green, Config),
-                                      Text]),
+  BasePart = io_lib:format("~ts  ~ts", [maybe_colorize(Domain, green, Config),
+                                        Text]),
   FormatDatum = fun (Name, Value, Acc) ->
                     NameString = maybe_colorize(atom_to_list(Name), blue,
                                                 Config),
                     String = case Value of
                                Bin when is_binary(Bin) ->
-                                 io_lib:format(" ~s=~s", [NameString, Bin]);
+                                 io_lib:format(" ~ts=~ts", [NameString, Bin]);
                                _ ->
-                                 io_lib:format(" ~s=~p", [NameString, Value])
+                                 io_lib:format(" ~ts=~p", [NameString, Value])
                              end,
                     [String | Acc]
                 end,
