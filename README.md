@@ -39,6 +39,13 @@ For example:
 ].
 ```
 
+You also need to make sure your release loads the `jt_log` application,
+e.g. in the Rebar3 configuration:
+
+```erlang
+{relx, [{release, {my_app, "dev"}, [inets, sasl, jt_log, my_app]}]}.
+```
+
 The formatter supports two formats: `text` (with or without colors) and `json`.
 
 ## Documentation
